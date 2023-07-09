@@ -1,0 +1,2 @@
+# Especificaciones
+El estado inicial del almacén estará representado por una cuadrícula bidimensional, donde cada celda puede contener un jugador, una caja, una pared, un destino o estar vacía. El jugador puede moverse en cuatro direcciones (arriba, abajo, izquierda y derecha) y solo puede empujar una caja si no hay obstáculos en el camino.

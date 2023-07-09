@@ -1,0 +1,1 @@
+# Representacion de las pistas del juego.
