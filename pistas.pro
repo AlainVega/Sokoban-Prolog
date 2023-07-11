@@ -6,12 +6,17 @@
  * pista(fila, columna, caja). 
  * pista(fila, columna, destino).
  * pista(fila, columna, jugador).
+ * pista(fila, columna, obstaculo).
 */
 
-% Por ejemplo: un nivel con 1 caja, su destino y el juegador.
+% Por ejemplo: un nivel con un tablero 3x3
+filas(3).
+columnas(3).
 
-pista(2, 5, c). 
-pista(3, 4, x).
-pista(1, 1, j).
+% 1 caja, su destino y el jugador.
+pista(1, 1, c). 
+pista(1, 2, x).
+pista(2, 1, j).
 
-% Este archivo deberia ser importado por el sokoban.pro para inicializar la matriz del juego.
+% "Importamos" el archivo que resuelve el juego.
+:- consult('sokoban.pro').
