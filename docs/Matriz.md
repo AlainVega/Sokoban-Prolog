@@ -1,1 +1,0 @@
-# Representacion de la matriz de juego.
