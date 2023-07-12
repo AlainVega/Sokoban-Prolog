@@ -73,17 +73,27 @@ dirty([F, C]) :- (at(j, [F, C]); at(c, [F, C]); at(o, [F, C])), !.
 
 clean([F, C]) :- onTable([F, C]), not(dirty([F, C])).
 
-loadAllAt(L) :- findall([O, [F, C]], (at(O, [F, C]), O \= o), L), write(L).
+loadPlayerAndBoxPositions(L) :- findall([O, [F, C]], (at(O, [F, C]), O \= o, O \= x), L), write(L).
 
-defineInitialState(L) :- loadAllAt(L), initialState(L), !.
+loadDestinyPositions(L) :- findall([x, [F, C]], (at(x, [F, C])), L), write(L).
+
+loadObstaclesPositions(L) :- findall([o, [F, C]], (at(o, [F, C])), L), write(L).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Estados, estado inicial, goal test
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+/** Un estado cualquiera s es una lista [[at(j, [Fj, Cj]), [at(c, [Fc, Cc])], ..., [at(c, [Fc, Cc])]]  del jugador y todas las cajas
+ * Es decir, un estado es donde esta el jugador y todas las cajas.
+*/
+
+defineInitialState(L) :- loadPlayerAndBoxPositions(L), initialState(L), !.
+
 % Necesita una lista donde estan todos los at()
 initialState([]).
 initialState([H|T]) :- H = [O, [FO, CO]], at(O, [FO, CO]), initialState(T), !.
+
+defineGoalTest(L) :- loadDestinyPositions(L), goalTest(L), !.
 
 % Necesita una lista de las posiciones de los destinos x
 goalTest([]). % Caso base.
@@ -99,3 +109,8 @@ pushUp(c, [F1, C1], [F2, C2], [Fj, Cj]) :- at(c, [F1, C1]), clean([F2, C2]), dow
 pushDown(c, [F1, C1], [F2, C2], [Fj, Cj]) :- at(c, [F1, C1]), clean([F2, C2]), up([Fj, Cj], [F1, C1]), up([F1, C1], [F2, C2]).
 pushRight(c, [F1, C1], [F2, C2], [Fj, Cj]) :- at(c, [F1, C1]), clean([F2, C2]), left([Fj, Cj], [F1, C1]), left([F1, C1], [F2, C2]).
 pushLeft(c, [F1, C1], [F2, C2], [Fj, Cj]) :- at(c, [F1, C1]), clean([F2, C2]), right([Fj, Cj], [F1, C1]), right([F1, C1], [F2, C2]).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Resolver sokoban
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
