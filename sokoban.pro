@@ -63,21 +63,31 @@ up([F1, C1], [F2, C2]) :- F1 is F2 - 1, C1 is C2.
 down([F1, C1], [F2, C2]) :- F1 is F2 + 1, C1 is C2.
 
 % Cargar pistas de otro archivo.
-at(j, [F, C]) :- pista(F, C, j), !.
-at(c, [F, C]) :- pista(F, C, c), !.
-at(x, [F, C]) :- pista(F, C, x), !.
-at(o, [F, C]) :- pista(F, C, o), !.
+at(j, [F, C]) :- pista(F, C, j).
+at(c, [F, C]) :- pista(F, C, c).
+at(x, [F, C]) :- pista(F, C, x).
+at(o, [F, C]) :- pista(F, C, o).
 
-% La celda esta sucia? sucia = hay un jugador o caja o obstaculo.
+% La celda esta sucia? sucia = hay un jugador o caja u obstaculo.
 dirty([F, C]) :- (at(j, [F, C]); at(c, [F, C]); at(o, [F, C])), !.
 
 clean([F, C]) :- onTable([F, C]), not(dirty([F, C])).
+
+loadAllAt(L) :- findall([O, [F, C]], at(O, [F, C]), L), write(L).
+
+defineInitialState(L) :- loadAllAt(L), initialState(L), !.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Estados, estado inicial, goal test
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Necesita una lista donde estan todos los at()
+initialState([]).
+initialState([H|T]) :- H = [O, [FO, CO]], at(O, [FO, CO]), initialState(T), !.
 
+% Necesita una lista de las posiciones de los destinos x
+goalTest([]). % Caso base.
+goalTest([H|T]) :- H = [F, C], at(c, [F, C]), dirty([F, C]), goalTest(T). % Caso inductivo.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Operadores STRIP
