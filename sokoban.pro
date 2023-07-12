@@ -73,7 +73,7 @@ dirty([F, C]) :- (at(j, [F, C]); at(c, [F, C]); at(o, [F, C])), !.
 
 clean([F, C]) :- onTable([F, C]), not(dirty([F, C])).
 
-loadAllAt(L) :- findall([O, [F, C]], at(O, [F, C]), L), write(L).
+loadAllAt(L) :- findall([O, [F, C]], (at(O, [F, C]), O \= o), L), write(L).
 
 defineInitialState(L) :- loadAllAt(L), initialState(L), !.
 
