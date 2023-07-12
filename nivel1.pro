@@ -1,6 +1,6 @@
 % Tamanho del tablero (no tiene porque ser cuadrada)
 filas(2).
-columnas(2).
+columnas(3).
 
 % Pistas del nivel
 pista(1, 2, j).

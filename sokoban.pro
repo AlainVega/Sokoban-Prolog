@@ -31,3 +31,55 @@ conseguirPistas(P) :- findall(casilla(F,C,X), pista(F,C,X), P).
 % Mete las pistas que estan en la primera lista a L
 meterPistas([], _). % Caso base 
 meterPistas([H|T], L) :- member(H, L), meterPistas(T, L). % Caso inductivo
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Planeamiento
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Predicados necesarios
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+samePosition([F1, C1], [F2, C2]) :- F1 = F2 , C1 = C2.
+
+diffPosition([F1, C1], [F2, C2]) :- not(samePosition([F1, C1], [F2, C2])).
+
+between(L, X, R) :- X >= L, X =< R.
+
+% Esta Fila y columna estan dentro del tablero?
+onTable([F, C]) :- filas(Num_Filas), columnas(Num_columnas), between(1, F, Num_Filas), between(1, C, Num_columnas).
+
+% Estas 2 posiciones son adyacentes?
+adjacent([X1, Y1], [X2, Y2]) :- onTable([X1, Y1]), onTable([X2, Y2]), diffPosition([X1, Y1], [X2, Y2]), 
+        (right([X1, Y1], [X2, Y2]); left([X1, Y1], [X2, Y2]); up([X1, Y1], [X2, Y2]); down([X1, Y1], [X2, Y2])), !.
+
+% El primer parametro esta a la derecha del segundo.
+right([F1, C1], [F2, C2]) :- C1 is C2 + 1, F1 is F2.
+% El primer parametro esta a la izquierda del segundo.
+left([F1, C1], [F2, C2]) :- C1 is C2 - 1, F1 is F2.
+% El primer parametro esta arriba del segundo.
+up([F1, C1], [F2, C2]) :- F1 is F2 - 1, C1 is C2.
+% El primer parametro esta abajo del segundo.
+down([F1, C1], [F2, C2]) :- F1 is F2 + 1, C1 is C2.
+
+% Cargar pistas de otro archivo.
+at(j, [F, C]) :- pista(F, C, j).
+at(c, [F, C]) :- pista(F, C, c).
+at(x, [F, C]) :- pista(F, C, x).
+at(o, [F, C]) :- pista(F, C, o).
+
+% La celda esta sucia? sucia = hay un jugador o caja o obstaculo.
+dirty([F, C]) :- (at(j, [F, C]); at(c, [F, C]); at(o, [F, C])), !.
+
+clean([F, C]) :- onTable([F, C]), not(dirty([F, C])).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Operadores STRIP
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+move(j, [F1, C1], [F2, C2]) :- at(j, [F1, C1]), clean([F2, C2]), adjacent([F1, C1], [F2, C2]).
+
+pushUp(c, [F1, C1], [F2, C2], [Fj, Cj]) :- at(c, [F1, C1]), clean([F2, C2]), down([Fj, Cj], [F1, C1]), down([F1, C1], [F2, C2]).
+pushDown(c, [F1, C1], [F2, C2], [Fj, Cj]) :- at(c, [F1, C1]), clean([F2, C2]), up([Fj, Cj], [F1, C1]), up([F1, C1], [F2, C2]).
+pushRight(c, [F1, C1], [F2, C2], [Fj, Cj]) :- at(c, [F1, C1]), clean([F2, C2]), left([Fj, Cj], [F1, C1]), left([F1, C1], [F2, C2]).
+pushLeft(c, [F1, C1], [F2, C2], [Fj, Cj]) :- at(c, [F1, C1]), clean([F2, C2]), right([Fj, Cj], [F1, C1]), right([F1, C1], [F2, C2]).
