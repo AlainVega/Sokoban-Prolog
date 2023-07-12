@@ -16,3 +16,6 @@ Se representa como:
   x, ,o, ,c, 
    ,c,o, , ,
    , , , , ,x ]
+
+### El tablero del nivel 3
+![Imagen del tablero del nivel 3](/imagenes/Nivel3.png)

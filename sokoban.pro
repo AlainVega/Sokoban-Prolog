@@ -63,15 +63,21 @@ up([F1, C1], [F2, C2]) :- F1 is F2 - 1, C1 is C2.
 down([F1, C1], [F2, C2]) :- F1 is F2 + 1, C1 is C2.
 
 % Cargar pistas de otro archivo.
-at(j, [F, C]) :- pista(F, C, j).
-at(c, [F, C]) :- pista(F, C, c).
-at(x, [F, C]) :- pista(F, C, x).
-at(o, [F, C]) :- pista(F, C, o).
+at(j, [F, C]) :- pista(F, C, j), !.
+at(c, [F, C]) :- pista(F, C, c), !.
+at(x, [F, C]) :- pista(F, C, x), !.
+at(o, [F, C]) :- pista(F, C, o), !.
 
 % La celda esta sucia? sucia = hay un jugador o caja o obstaculo.
 dirty([F, C]) :- (at(j, [F, C]); at(c, [F, C]); at(o, [F, C])), !.
 
 clean([F, C]) :- onTable([F, C]), not(dirty([F, C])).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Estados, estado inicial, goal test
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Operadores STRIP
