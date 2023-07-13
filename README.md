@@ -2,9 +2,15 @@
 Solucion a niveles simples del juego Sokoban mediante algoritmos de planeamiento.
 ### ¿Que es Sokoban?
 Sokoban es un juego de lógica en el que el jugador debe empujar cajas para colocarlas en destinos específicos en un almacén, utilizando un número limitado de movimientos.
-## Lenguajes y herramientas utilizadas
+
+Inventado en Japón por Hiroyuki Imabayashi, Sokoban significa "encargado de almacén" en japonés.
+#### Reglas del juego 
+1. Se puede empujar una caja que no esté bloqueada por obstáculos.
+2. No se puede empujar 2 o más cajas a la vez.
+3. No se puede “tirar” una caja, solo empujarla.
+### Lenguajes y herramientas utilizadas
 - Lenguaje: Prolog
-### Integrantes
+## Integrantes
 - Alain Vega
 - Mathias Martinez
 # Como probar el proyecto

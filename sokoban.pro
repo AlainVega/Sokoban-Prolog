@@ -22,12 +22,14 @@
 game(sokoban).
 
 % Crea la lista solucion, inicializa la lista con valor _
+% (EL NIVEL DEBE INCLUIR LOS HECHOS DE ESTE ARCHIVO).
 crearPlantilla(L) :- filas(FILAS), columnas(COLUMNAS), findall(casilla(F,C,_), (between(1,FILAS,F), between(1,COLUMNAS,C)), L).
 
 % Mete las pistas a la plantilla creada antes.
 cargarPistas(L) :- conseguirPistas(P), meterPistas(P, L).
 
 % Consigue las pistas de un archivo externo y la retorna en P
+% (EL NIVEL DEBE INCLUIR LOS HECHOS DE ESTE ARCHIVO).
 conseguirPistas(P) :- findall(casilla(F,C,X), pista(F,C,X), P).
 
 % Mete las pistas que estan en la primera lista a L
@@ -41,6 +43,7 @@ diffPosition([F1, C1], [F2, C2]) :- not(samePosition([F1, C1], [F2, C2])).
 between(L, X, R) :- X >= L, X =< R.
 
 % Esta Fila y columna estan dentro del tablero?
+% (EL NIVEL DEBE INCLUIR LOS HECHOS DE ESTE ARCHIVO).
 onTable([F, C]) :- filas(Num_Filas), columnas(Num_columnas), between(1, F, Num_Filas), between(1, C, Num_columnas).
 
 % Estas 2 posiciones son adyacentes?
@@ -191,5 +194,3 @@ substitute(A, [A|As], B, [B|Bs]) :- substitute(A, As, B, Bs), !.
 substitute(A, [X|As], B, [X|Bs]) :- substitute(A, As, B, Bs).
 
 %:- debug.
-
-% TODO: arreglar problema con free linea 143, prolog da cualquier valor a F2 y C2 al parecer (moverUp? moverDown? solucionaria?)

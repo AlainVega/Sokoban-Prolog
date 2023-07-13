@@ -1,5 +1,5 @@
 # Representacion del tablero de juego.
-El tablero de juego se representa como una lista [] donde cada elemento de la lista representa un objeto del tablero. 
+El tablero de juego se representa como una lista [] donde cada miembro de la lista representa un elemento del tablero. 
 Como por j = jugador, c = caja, x = destino y o = obstaculo.
 
 ## Ejemplos 

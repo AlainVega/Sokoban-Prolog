@@ -5,3 +5,9 @@ Cada nivel define el tamaño especifico del tablero en la primera seccion del ar
 2. columnas(cantidad_columnas).
 
 donde cantidad_filas y cantidad_columnas son valores numericos.
+
+por ejemplo, definir un tablero de 5 filas y 6 columnas:
+```
+filas(5).
+columnas(6).
+```
