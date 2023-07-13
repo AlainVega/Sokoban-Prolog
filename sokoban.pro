@@ -1,23 +1,25 @@
-% Esto es un hecho, se puede comprobar corriendo en la terminal de swi-prolog (swipl) de esta forma:
-game(sokoban).
-/**
- * swipl sokoban.pro
- * game(sokoban)        ---> te va a responder true.
- * game(X).             ---> te va a responder X = sokoban.
- * X.                   ---> te va responder 42 (es un easter egg de nose que serie/pelicula)
- * 
- * Documentacion de swi-prolog: https://www.swi-prolog.org/pldoc/man?section=overview
- */
-% la extension que instale se llama VSC-Prolog
-% podemos usar la extension .pro o .pl (esta da problemas pq vscode piensa que es perl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-/**
- * Funcion principal para solucionar el sokoban.
- * Primero crea la plantilla de la solucion "inicializa la matriz".
- * Segundo carga las pistas del nivel a la plantilla solucion "inicializa el nivel".
- * Tercero escribe en consola la lista cargada.
+% Planificacion: mundo Sokoban.
+
+/** Integrantes:
+ * Alain Vega
+ * Mathias Martinez
 */
-sokoban(L) :- crearPlantilla(L), cargarPistas(L), write(L).
+
+% Trabajo practico: programacion logica de la materia Informatica 2
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Planeamiento
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Predicados necesarios, "auxiliares"
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+game(sokoban).
 
 % Crea la lista solucion, inicializa la lista con valor _
 crearPlantilla(L) :- filas(FILAS), columnas(COLUMNAS), findall(casilla(F,C,_), (between(1,FILAS,F), between(1,COLUMNAS,C)), L).
@@ -31,14 +33,6 @@ conseguirPistas(P) :- findall(casilla(F,C,X), pista(F,C,X), P).
 % Mete las pistas que estan en la primera lista a L
 meterPistas([], _). % Caso base 
 meterPistas([H|T], L) :- member(H, L), meterPistas(T, L). % Caso inductivo
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Planeamiento
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Predicados necesarios
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 samePosition([F1, C1], [F2, C2]) :- F1 = F2 , C1 = C2.
 
@@ -90,9 +84,9 @@ loadObstaclesPositions(L) :- findall([o, [F, C]], (at(o, [F, C])), L).
 
 prepareFinalState(L) :- findall([c, [F, C]], (at(x, [F, C])), L).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Estados, estado inicial, goal test
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /** Un estado cualquiera s es una lista [[at(j, [Fj, Cj]), [at(c, [Fc, Cc])], ..., [at(c, [Fc, Cc])]]  del jugador y todas las cajas
  * Es decir, un estado es donde esta el jugador y todas las cajas.
@@ -112,11 +106,12 @@ defineFinalState(L3) :- loadPlayerAnyPosition(L1), prepareFinalState(L2), append
 goalTest([]). % Caso base.
 goalTest([H|T]) :- H = [F, C], at(c, [F, C]), dirty([F, C]), goalTest(T). % Caso inductivo.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Resolver sokoban
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Algoritmo de planeamiento. Busqueda: iterative deepning.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-soko(Plan) :- welcome, defineInitialState(Initial), defineFinalState(Final), solve(Initial, Final, Plan).
+% Funcion principal 
+sokoban(Plan) :- welcome, defineInitialState(Initial), defineFinalState(Final), solve(Initial, Final, Plan).
 
 welcome :- write("======================================="), nl, nl,
         write("Planificacion: Mundo Sokoban"), nl, nl,
