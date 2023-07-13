@@ -48,10 +48,10 @@ onTable([F, C]) :- filas(Num_Filas), columnas(Num_columnas), between(1, F, Num_F
 
 % Estas 2 posiciones son adyacentes?
 adjacent([X1, Y1], [X2, Y2]) :-  
-        right([X1, Y1], [X2, Y2]); 
-        left([X1, Y1], [X2, Y2]);
-        up([X1, Y1], [X2, Y2]); 
-        down([X1, Y1], [X2, Y2]).
+        (right([X1, Y1], [X2, Y2]), onTable([X1, Y1]), onTable([X2, Y2])); 
+        (left([X1, Y1], [X2, Y2]), onTable([X1, Y1]), onTable([X2, Y2]));
+        (up([X1, Y1], [X2, Y2]), onTable([X1, Y1]), onTable([X2, Y2])); 
+        (down([X1, Y1], [X2, Y2]), onTable([X1, Y1]), onTable([X2, Y2])).
 
 % El primer parametro esta a la derecha del segundo.
 right([F1, C1], [F2, C2]) :-  F1 = F2, succ(C2, C1).
@@ -114,11 +114,15 @@ goalTest([H|T]) :- H = [F, C], at(c, [F, C]), dirty([F, C]), goalTest(T). % Caso
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Funcion principal 
-sokoban(Plan) :- welcome, defineInitialState(Initial), defineFinalState(Final), solve(Initial, Final, Plan).
+sokoban(Plan) :- welcome, defineInitialState(Initial), defineFinalState(Final), solve(Initial, Final, Plan), foundPlan(Plan).
 
 welcome :- write("======================================="), nl, nl,
         write("Planificacion: Mundo Sokoban"), nl, nl,
         write("======================================="), nl.
+
+foundPlan(Plan) :- write("======================================="), nl,
+        write("Se encontro el plan: "), write(Plan), nl,
+        write("=======================================").
 
 solve(Initial, Final, Plan) :- strips(Initial, Final, Plan).
 
@@ -148,9 +152,29 @@ bounded_strips(Bound, Initial, Final, Visited, [Action|Actions]) :-
  * Es la precondicion de un operador.
 */
 % Accion mover jugador.
-action(State, move(j, [F1, C1], [F2, C2])) :- 
-        at(j, [F1, C1]), adjacent([F1, C1], [F2, C2]), free(State, [F2, C2]).
+action(State, moveUp(j, [F1, C1], [F2, C2])) :- 
+        at(State, j, [F1, C1]), down([F1, C1], [F2, C2]), onTable([F2, C2]), free(State, [F2, C2]).
+action(State, moveDown(j, [F1, C1], [F2, C2])) :- 
+        at(State, j, [F1, C1]), up([F1, C1], [F2, C2]), onTable([F2, C2]), free(State, [F2, C2]).
+action(State, moveRight(j, [F1, C1], [F2, C2])) :- 
+        at(State, j, [F1, C1]), left([F1, C1], [F2, C2]), onTable([F2, C2]), free(State, [F2, C2]).
+action(State, moveLeft(j, [F1, C1], [F2, C2])) :- 
+        at(State, j, [F1, C1]), right([F1, C1], [F2, C2]), onTable([F2, C2]), free(State, [F2, C2]).
 % Acciones de empujar la caja.
+action(State, pushUp(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
+        at(State, c, [F1, C1]), at(State, j, [Fj, Cj]), down([Fj, Cj], [F1, C1]), down([F1, C1], [F2, C2]), free(State, [F2, C2]).
+action(State, pushDown(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
+        at(State, c, [F1, C1]), at(State, j, [Fj, Cj]), up([Fj, Cj], [F1, C1]), up([F1, C1], [F2, C2]), free(State, [F2, C2]).
+action(State, pushRight(c, [F1, C1], [F2, C2], [Fj, Cj])) :- 
+        at(State, c, [F1, C1]), at(State, j, [Fj, Cj]), left([Fj, Cj], [F1, C1]), left([F1, C1], [F2, C2]), free(State, [F2, C2]).
+action(State, pushLeft(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
+        at(State, c, [F1, C1]), at(State, j, [Fj, Cj]), right([Fj, Cj], [F1, C1]), right([F1, C1], [F2, C2]), free(State, [F2, C2]).
+
+/*
+action(State, move(j, [F1, C1], [F2, C2])) :- 
+        at(State, j, [F1, C1]), adjacent([F1, C1], [F2, C2]), free(State, [F2, C2]).
+
+
 action(State, pushUp(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
         at(c, [F1, C1]), down([Fj, Cj], [F1, C1]), down([F1, C1], [F2, C2]), free(State, [F2, C2]).
 action(State, pushDown(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
@@ -159,6 +183,11 @@ action(State, pushRight(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
         at(c, [F1, C1]), left([Fj, Cj], [F1, C1]), left([F1, C1], [F2, C2]), free(State, [F2, C2]).
 action(State, pushLeft(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
         at(c, [F1, C1]), right([Fj, Cj], [F1, C1]), right([F1, C1], [F2, C2]), free(State, [F2, C2]).
+*/
+
+% at en el estado actual
+at(State, j, [F, C]) :- member([j, [F, C]], State).
+at(State, c, [F, C]) :- member([c, [F, C]], State).
 
 % Mirar si esa posicion en el estado actual NO tiene un jugador, caja u obstaculo.
 free(State, [F, C]) :- loadObstaclesPositions(O), append(State, O, L), onTable([F, C]),
@@ -169,9 +198,19 @@ free(State, [F, C]) :- loadObstaclesPositions(O), append(State, O, L), onTable([
  * Es el efecto de un operador.
 */
 % Cambia el estado actual al siguiente al realizar la accion mover jugador
-perform(CurrentState, move(j, [F1, C1], [F2, C2]), NextState) :- 
+/*perform(CurrentState, move(j, [F1, C1], [F2, C2]), NextState) :- 
+        substitute([j,[F1,C1]], CurrentState, [j,[F2,C2]], NextState), write("El proximo estado es: "), write(NextState), nl.*/
+perform(CurrentState, moveUp(j, [F1, C1], [F2, C2]), NextState) :- 
         substitute([j,[F1,C1]], CurrentState, [j,[F2,C2]], NextState), write("El proximo estado es: "), write(NextState), nl.
 
+perform(CurrentState, moveDown(j, [F1, C1], [F2, C2]), NextState) :- 
+        substitute([j,[F1,C1]], CurrentState, [j,[F2,C2]], NextState), write("El proximo estado es: "), write(NextState), nl.
+
+perform(CurrentState, moveRight(j, [F1, C1], [F2, C2]), NextState) :- 
+        substitute([j,[F1,C1]], CurrentState, [j,[F2,C2]], NextState), write("El proximo estado es: "), write(NextState), nl.
+
+perform(CurrentState, moveLeft(j, [F1, C1], [F2, C2]), NextState) :- 
+        substitute([j,[F1,C1]], CurrentState, [j,[F2,C2]], NextState), write("El proximo estado es: "), write(NextState), nl.
 % Cambia el estado actual al siguiente al realizar la accion empujar caja hacia arriba
 perform(CurrentState, pushUp(c, [F1, C1], [F2, C2], [Fj, Cj]), NextState) :- 
         substitute([c,[F1,C1]], CurrentState, [c,[F2, C2]], IntermediateState),
