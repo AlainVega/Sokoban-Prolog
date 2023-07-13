@@ -19,3 +19,6 @@ Se representa como:
 
 ### El tablero del nivel 3
 ![Imagen del tablero del nivel 3](/imagenes/Nivel3.png)
+
+### El tablero del nivel 4
+![Imagen del tablero del nivel 3](/imagenes/Nivel4.png)
