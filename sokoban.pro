@@ -20,16 +20,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ayuda :- write("====================================================================================================================="), nl,
-        write("Consultas imporantes:"), nl,
+        write("Consultas importantes:"), nl,
         write("====================================================================================================================="), nl,
-        write("game(X). <-- que juego es?"), nl,
-        write("sokoban(X). <-- resolver el sokoban del nivel abierto, con algoritmos de planeamiento (en X estara el plan)"), nl,
-        write("desarrolladores. <-- quienes fueron los desarrolladores del proyecto"), nl,
-        write("materia. <-- en que materia fue desarrollado el proyecto"), nl,
-        write("ayuda. <-- informacion sobre consultas importantes"), nl,
-        write("?. <-- informacion sobre consultas importantes"), nl,
-        write("info. <-- informacion sobre consultas importantes"), nl,
-        write("salir. <-- para cerrar el programa"), nl,
+        write("game(X). <-- Muestra el nombre del juego."), nl,
+        write("sokoban(X). <-- Resuelve el Sokoban del nivel abierto, con algoritmos de planeamiento (en X estara el plan)."), nl,
+        write("desarrolladores. <-- Muestra los desarrolladores del proyecto."), nl,
+        write("profesores. <-- Muestra los profesores de la materia."), nl,
+        write("materia. <-- Muestra la materia en la que fue desarrollado el proyecto."), nl,
+        write("ayuda. <-- Muestra informacion sobre consultas importantes."), nl,
+        write("?. <-- Muestra informacion sobre consultas importantes."), nl,
+        write("info. <-- Muestra informacion sobre consultas importantes."), nl,
+        write("salir. <-- Cierra el programa."), nl,
         write("=====================================================================================================================").
 
 ? :- ayuda.
@@ -40,24 +41,26 @@ game(sokoban).
 
 desarrolladores :- write(" * Alain Vega"), nl, write(" * Mathias Martinez"), nl.
 
+profesores :- write(" * Alethia Hume"), nl, write(" * Benza Bareiro"), nl.
+
 materia :- write("Informatica 2").
 
 salir :- halt.
 
-% Crea la lista solucion, inicializa la lista con valor _
+% Crea la lista solucion, inicializa la lista con valor _.
 % (EL NIVEL DEBE INCLUIR LOS HECHOS DE ESTE ARCHIVO).
-crearPlantilla(L) :- filas(FILAS), columnas(COLUMNAS), findall(casilla(F,C,_), (between(1,FILAS,F), between(1,COLUMNAS,C)), L).
+crearPlantilla(L) :- filas(FILAS), columnas(COLUMNAS), findall(casilla(F, C, _), (between(1, FILAS, F), between(1, COLUMNAS, C)), L).
 
 % Mete las pistas a la plantilla creada antes.
 cargarPistas(L) :- conseguirPistas(P), meterPistas(P, L).
 
-% Consigue las pistas de un archivo externo y la retorna en P
+% Consigue las pistas de un archivo externo y la retorna en P.
 % (EL NIVEL DEBE INCLUIR LOS HECHOS DE ESTE ARCHIVO).
-conseguirPistas(P) :- findall(casilla(F,C,X), pista(F,C,X), P).
+conseguirPistas(P) :- findall(casilla(F, C, X), pista(F, C, X), P).
 
 % Mete las pistas que estan en la primera lista a L
 meterPistas([], _). % Caso base 
-meterPistas([H|T], L) :- member(H, L), meterPistas(T, L). % Caso inductivo
+meterPistas([H|T], L) :- member(H, L), meterPistas(T, L). % Caso inductivo.
 
 samePosition([F1, C1], [F2, C2]) :- F1 = F2 , C1 = C2.
 
@@ -78,10 +81,13 @@ adjacent([X1, Y1], [X2, Y2]) :-
 
 % El primer parametro esta a la derecha del segundo.
 right([F1, C1], [F2, C2]) :-  F1 = F2, succ(C2, C1).
+
 % El primer parametro esta a la izquierda del segundo.
 left([F1, C1], [F2, C2]) :- F1 = F2, succ(C1, C2).
+
 % El primer parametro esta arriba del segundo.
 up([F1, C1], [F2, C2]) :- C1 = C2, succ(F1, F2).
+
 % El primer parametro esta abajo del segundo.
 down([F1, C1], [F2, C2]) :-  C1 = C2, succ(F2, F1).
 
@@ -124,7 +130,7 @@ defineInitialState(L) :- loadPlayerAndBoxPositions(L), write("El estado inicial 
 initialState([]).
 initialState([H|T]) :- H = [O, [FO, CO]], at(O, [FO, CO]), initialState(T), !.
 
-defineGoalTest(L) :- prepareFinalState(L), write("La meta es: "), write(L), nl,!.
+defineGoalTest(L) :- prepareFinalState(L), write("La meta es: "), write(L), nl, !.
 
 defineFinalState(L3) :- loadPlayerAnyPosition(L1), prepareFinalState(L2), append(L1, L2, L3), write("El estado final tiene la forma: "), write(L3), nl.
 
@@ -185,6 +191,7 @@ action(State, moveRight(j, [F1, C1], [F2, C2])) :-
         at(State, j, [F1, C1]), left([F1, C1], [F2, C2]), onTable([F2, C2]), free(State, [F2, C2]).
 action(State, moveLeft(j, [F1, C1], [F2, C2])) :- 
         at(State, j, [F1, C1]), right([F1, C1], [F2, C2]), onTable([F2, C2]), free(State, [F2, C2]).
+
 % Acciones de empujar la caja.
 action(State, pushUp(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
         at(State, c, [F1, C1]), at(State, j, [Fj, Cj]), down([Fj, Cj], [F1, C1]), down([F1, C1], [F2, C2]), free(State, [F2, C2]).
@@ -195,22 +202,7 @@ action(State, pushRight(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
 action(State, pushLeft(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
         at(State, c, [F1, C1]), at(State, j, [Fj, Cj]), right([Fj, Cj], [F1, C1]), right([F1, C1], [F2, C2]), free(State, [F2, C2]).
 
-/*
-action(State, move(j, [F1, C1], [F2, C2])) :- 
-        at(State, j, [F1, C1]), adjacent([F1, C1], [F2, C2]), free(State, [F2, C2]).
-
-
-action(State, pushUp(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
-        at(c, [F1, C1]), down([Fj, Cj], [F1, C1]), down([F1, C1], [F2, C2]), free(State, [F2, C2]).
-action(State, pushDown(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
-        at(c, [F1, C1]), up([Fj, Cj], [F1, C1]), up([F1, C1], [F2, C2]), free(State, [F2, C2]).
-action(State, pushRight(c, [F1, C1], [F2, C2], [Fj, Cj])) :- 
-        at(c, [F1, C1]), left([Fj, Cj], [F1, C1]), left([F1, C1], [F2, C2]), free(State, [F2, C2]).
-action(State, pushLeft(c, [F1, C1], [F2, C2], [Fj, Cj])) :-
-        at(c, [F1, C1]), right([Fj, Cj], [F1, C1]), right([F1, C1], [F2, C2]), free(State, [F2, C2]).
-*/
-
-% at en el estado actual
+% at en el estado actual.
 at(State, j, [F, C]) :- member([j, [F, C]], State).
 at(State, c, [F, C]) :- member([c, [F, C]], State).
 
@@ -222,9 +214,7 @@ free(State, [F, C]) :- loadObstaclesPositions(O), append(State, O, L), onTable([
  * Cambia el estado actual al nuevo estado con las acciones definidas. 
  * Es el efecto de un operador.
 */
-% Cambia el estado actual al siguiente al realizar la accion mover jugador
-/*perform(CurrentState, move(j, [F1, C1], [F2, C2]), NextState) :- 
-        substitute([j,[F1,C1]], CurrentState, [j,[F2,C2]], NextState), write("El proximo estado es: "), write(NextState), nl.*/
+% Cambia el estado actual al siguiente al realizar la accion mover jugador.
 perform(CurrentState, moveUp(j, [F1, C1], [F2, C2]), NextState) :- 
         substitute([j,[F1,C1]], CurrentState, [j,[F2,C2]], NextState), write("El proximo estado es: "), write(NextState), nl.
 
@@ -236,19 +226,23 @@ perform(CurrentState, moveRight(j, [F1, C1], [F2, C2]), NextState) :-
 
 perform(CurrentState, moveLeft(j, [F1, C1], [F2, C2]), NextState) :- 
         substitute([j,[F1,C1]], CurrentState, [j,[F2,C2]], NextState), write("El proximo estado es: "), write(NextState), nl.
-% Cambia el estado actual al siguiente al realizar la accion empujar caja hacia arriba
+
+% Cambia el estado actual al siguiente al realizar la accion empujar caja hacia arriba.
 perform(CurrentState, pushUp(c, [F1, C1], [F2, C2], [Fj, Cj]), NextState) :- 
         substitute([c,[F1,C1]], CurrentState, [c,[F2, C2]], IntermediateState),
         substitute([j,[Fj,Cj]], IntermediateState, [j,[F1, C1]], NextState), write("El proximo estado es: "), write(NextState), nl.
-% Cambia el estado actual al siguiente al realizar la accion empujar caja hacia abajo
+
+% Cambia el estado actual al siguiente al realizar la accion empujar caja hacia abajo.
 perform(CurrentState, pushDown(c, [F1, C1], [F2, C2], [Fj, Cj]), NextState) :- 
         substitute([c,[F1,C1]], CurrentState, [c,[F2, C2]], IntermediateState),
         substitute([j,[Fj,Cj]], IntermediateState, [j,[F1, C1]], NextState), write("El proximo estado es: "), write(NextState), nl.
-% Cambia el estado actual al siguiente al realizar la accion empujar caja hacia la derecha
+
+% Cambia el estado actual al siguiente al realizar la accion empujar caja hacia la derecha.
 perform(CurrentState, pushRight(c, [F1, C1], [F2, C2], [Fj, Cj]), NextState) :- 
         substitute([c,[F1,C1]], CurrentState, [c,[F2, C2]], IntermediateState),
         substitute([j,[Fj,Cj]], IntermediateState, [j,[F1, C1]], NextState), write("El proximo estado es: "), write(NextState), nl.
-% Cambia el estado actual al siguiente al realizar la accion empujar caja hacia izquierda
+
+% Cambia el estado actual al siguiente al realizar la accion empujar caja hacia izquierda.
 perform(CurrentState, pushLeft(c, [F1, C1], [F2, C2], [Fj, Cj]), NextState) :- 
         substitute([c,[F1,C1]], CurrentState, [c,[F2, C2]], IntermediateState),
         substitute([j,[Fj,Cj]], IntermediateState, [j,[F1, C1]], NextState), write("El proximo estado es: "), write(NextState), nl.
