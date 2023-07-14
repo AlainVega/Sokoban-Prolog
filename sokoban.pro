@@ -28,12 +28,9 @@ ayuda :- write("================================================================
         write("profesores. <-- Muestra los profesores de la materia."), nl,
         write("materia. <-- Muestra la materia en la que fue desarrollado el proyecto."), nl,
         write("ayuda. <-- Muestra informacion sobre consultas importantes."), nl,
-        write("?. <-- Muestra informacion sobre consultas importantes."), nl,
         write("info. <-- Muestra informacion sobre consultas importantes."), nl,
         write("salir. <-- Cierra el programa."), nl,
         write("=====================================================================================================================").
-
-? :- ayuda.
 
 info :- ayuda.
         

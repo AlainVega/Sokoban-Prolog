@@ -8,8 +8,7 @@ Inventado en Japón por Hiroyuki Imabayashi, Sokoban significa "encargado de alm
 Mas informacion: https://www.sokoban.jp/ 
 #### Reglas del juego 
 1. El jugador al empujar una caja (que no esté bloqueada por obstáculos) se mueve con ella (la caja es muy pesada como para empujarla y no moverse con ella)
-Es decir, si el jugador empuja una caja, este pasa a la posición antigua de la caja.
-
+Es decir, si el jugador empuja una caja, este pasa a la posición antigua de la caja y la caja se mueve exactamente una posición frente a ella (no se puede empujar la caja a más de una casilla de distancia de su posición original).
 2. No se puede empujar 2 o más cajas a la vez.
 3. No se puede “tirar” una caja, solo empujarla.
 ### Lenguajes y herramientas utilizadas
