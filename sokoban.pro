@@ -19,7 +19,30 @@
 % Predicados necesarios, "auxiliares"
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+ayuda :- write("====================================================================================================================="), nl,
+        write("Consultas imporantes:"), nl,
+        write("====================================================================================================================="), nl,
+        write("game(X). <-- que juego es?"), nl,
+        write("sokoban(X). <-- resolver el sokoban del nivel abierto, con algoritmos de planeamiento (en X estara el plan)"), nl,
+        write("desarrolladores. <-- quienes fueron los desarrolladores del proyecto"), nl,
+        write("materia. <-- en que materia fue desarrollado el proyecto"), nl,
+        write("ayuda. <-- informacion sobre consultas importantes"), nl,
+        write("?. <-- informacion sobre consultas importantes"), nl,
+        write("info. <-- informacion sobre consultas importantes"), nl,
+        write("salir. <-- para cerrar el programa"), nl,
+        write("=====================================================================================================================").
+
+? :- ayuda.
+
+info :- ayuda.
+        
 game(sokoban).
+
+desarrolladores :- write(" * Alain Vega"), nl, write(" * Mathias Martinez"), nl.
+
+materia :- write("Informatica 2").
+
+salir :- halt.
 
 % Crea la lista solucion, inicializa la lista con valor _
 % (EL NIVEL DEBE INCLUIR LOS HECHOS DE ESTE ARCHIVO).
@@ -116,13 +139,15 @@ goalTest([H|T]) :- H = [F, C], at(c, [F, C]), dirty([F, C]), goalTest(T). % Caso
 % Funcion principal 
 sokoban(Plan) :- welcome, defineInitialState(Initial), defineFinalState(Final), solve(Initial, Final, Plan), foundPlan(Plan).
 
-welcome :- write("======================================="), nl, nl,
+welcome :- write("=====================================================================================================================")
+        , nl, nl,
         write("Planificacion: Mundo Sokoban"), nl, nl,
-        write("======================================="), nl.
+        write("=====================================================================================================================")
+        , nl.
 
-foundPlan(Plan) :- write("======================================="), nl,
-        write("Se encontro el plan: "), write(Plan), nl,
-        write("=======================================").
+foundPlan(Plan) :-write("=====================================================================================================================")
+        , nl, write("Se encontro el plan: "), write(Plan), nl,
+        write("=====================================================================================================================").
 
 solve(Initial, Final, Plan) :- strips(Initial, Final, Plan).
 
